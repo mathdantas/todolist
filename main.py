@@ -16,6 +16,3 @@ def menu():
     ]
 
     return inquirer.prompt(lista_menu)
-
-
-print(menu())
