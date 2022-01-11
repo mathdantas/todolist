@@ -42,4 +42,38 @@ def adicionar_tarefa():
         escritor = csv.writer(tarefas_csv, delimiter=';', lineterminator='\n')
         escritor.writerow(tarefa_lista)
 
-adicionar_tarefa()
+#Alterar status da Tarefa: Ao solicitar essa opção o usuário poderá alterar
+#o status de uma determinada tarefa, ou seja, se a tarefa está como Pendente,
+#ficará como Concluída, e vice-versa. Para isso, ele deve informar o título da tarefa. 
+# Você deverá alterar a coluna de Status do arquivo, referente à tarefa que possui o título informado pelo usuário.
+
+def alterar_tarefa():
+
+    with open('tarefas.csv', 'r') as tarefas_csv:
+        tabela = csv.reader(tarefas_csv, delimiter=';', lineterminator='\n')
+        conteudo = list(tabela)
+
+    lista_tarefas = [
+        inquirer.List(
+        "tarefa",
+            message="Qual tarefa deseja modificar o status?",
+            choices=conteudo
+        )
+    ]
+
+    alterar_tarefa = inquirer.prompt(lista_tarefas)
+    
+    for index, tarefa in enumerate(conteudo):
+        if tarefa == alterar_tarefa["tarefa"]:
+            if tarefa[3] == 'Pendente':
+                conteudo[index][3] = 'Concluida'
+                print('Sucesso: ', conteudo[index])
+            else:
+                conteudo[index][3] = 'Pendente'
+                print('Sucesso: ', conteudo[index])
+
+    with open('tarefas.csv', 'w') as tarefas_csv:
+        escritor = csv.writer(tarefas_csv, delimiter=';', lineterminator='\n')
+        escritor.writerows(conteudo)
+
+alterar_tarefa()
