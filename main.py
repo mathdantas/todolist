@@ -74,6 +74,28 @@ def alterar_tarefa():
 
     with open('tarefas.csv', 'w') as tarefas_csv:
         escritor = csv.writer(tarefas_csv, delimiter=';', lineterminator='\n')
-        escritor.writerows(conteudo)
+        escritor.writerows(conteudo)    
 
-alterar_tarefa()
+
+def remover_tarefa():
+
+    with open('tarefas.csv', 'r') as tarefas_csv:
+        tabela = csv.reader(tarefas_csv, delimiter=';', lineterminator='\n')
+        conteudo = list(tabela)
+
+    lista_tarefas = [
+        inquirer.List(
+        "tarefa",
+            message="Qual tarefa deseja remover?",
+            choices=conteudo
+        )
+    ]
+
+    tarefa_para_excluir = inquirer.prompt(lista_tarefas)
+    
+    conteudo.remove(tarefa_para_excluir["tarefa"])
+    print(f'Sucesso: {tarefa_para_excluir["tarefa"]} removida.' )
+
+    with open('tarefas.csv', 'w') as tarefas_csv:
+        escritor = csv.writer(tarefas_csv, delimiter=';', lineterminator='\n')
+        escritor.writerows(conteudo)  
