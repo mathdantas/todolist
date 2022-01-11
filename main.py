@@ -99,3 +99,27 @@ def remover_tarefa():
     with open('tarefas.csv', 'w') as tarefas_csv:
         escritor = csv.writer(tarefas_csv, delimiter=';', lineterminator='\n')
         escritor.writerows(conteudo)  
+
+def visualizar_tarefas_por_data():
+
+    with open('tarefas.csv', 'r') as tarefas_csv:
+        tabela = csv.reader(tarefas_csv, delimiter=';', lineterminator='\n')
+        conteudo = list(tabela)
+        datas_com_duplicatas = [linha[1] for linha in conteudo] 
+        datas_sem_duplicatas = set(datas_com_duplicatas)
+        lista_datas = list(datas_sem_duplicatas)
+
+    lista_tarefas = [
+        inquirer.List(
+        "data",
+            message="Deseja visualizar as tarefas de qual data?",
+            choices=lista_datas
+        )
+    ]
+
+    data_selecionada = inquirer.prompt(lista_tarefas)
+    
+
+    for index, tarefa in enumerate(conteudo):
+        if tarefa[1] == data_selecionada["data"]:
+            print(tarefa)
