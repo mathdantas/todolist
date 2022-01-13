@@ -1,14 +1,15 @@
+import abc
 import csv
 import inquirer
-
 class ToDoList():
     def __init__(self):
         self.lista = self.ler_csv()
-
+    
     def ler_csv(self):
         with open('tarefas.csv', 'r') as tarefas_csv:
             tabela = csv.reader(tarefas_csv, delimiter=';', lineterminator='\n')
             conteudo = list(tabela)
+            
         return conteudo
 
     def salvar_csv(self):
@@ -35,6 +36,14 @@ class ToDoList():
         escolha = inquirer.prompt(lista_menu)
         return escolha["escolha_menu"]
 
+    def tarefa_existe(self, titulo, data_de_realizacao):
+        self.lista = self.ler_csv()
+        for tarefa in self.lista:
+            if tarefa[0] == titulo and tarefa[1] == data_de_realizacao:
+                return True
+            else:
+                return False         
+
     def adicionar_tarefa(self):
         lista_tarefa = [
             inquirer.Text("titulo", message="Titulo: "),
@@ -50,13 +59,18 @@ class ToDoList():
         ]
         tarefa = inquirer.prompt(lista_tarefa)
         tarefa['status'] = 'Pendente'
+        tarefa['titulo'] = tarefa['titulo'].strip()
         tarefa_lista = list(tarefa.values())
+
+        if self.tarefa_existe(tarefa_lista[0],tarefa_lista[1]):
+            return print('Erro: essa tarefa já existe.') 
         
         with open('tarefas.csv', 'a') as tarefas_csv:
             escritor = csv.writer(tarefas_csv, delimiter=';', lineterminator='\n')
             escritor.writerow(tarefa_lista)
 
         self.lista = self.ler_csv()
+        print(f'Sucesso: tarefa adicionada.' )
 
     def alterar_tarefa(self):
 
