@@ -3,19 +3,27 @@ import csv
 import inquirer
 class ToDoList():
     def __init__(self):
-        self.lista = self.ler_csv()
+        self.lista = self.__ler_csv()
     
-    def ler_csv(self):
+    def __ler_csv(self):
         with open('tarefas.csv', 'r') as tarefas_csv:
             tabela = csv.reader(tarefas_csv, delimiter=';', lineterminator='\n')
             conteudo = list(tabela)
             
         return conteudo
 
-    def salvar_csv(self):
+    def __salvar_csv(self):
         with open('tarefas.csv', 'w') as tarefas_csv:
             escritor = csv.writer(tarefas_csv, delimiter=';', lineterminator='\n')
             escritor.writerows(self.lista)
+
+    def __tarefa_existe(self, titulo, data_de_realizacao):
+        self.lista = self.__ler_csv()
+        for tarefa in self.lista:
+            if tarefa[0] == titulo and tarefa[1] == data_de_realizacao:
+                return True
+            else:
+                return False
 
     def menu(self)-> str:
 
@@ -35,14 +43,7 @@ class ToDoList():
 
         escolha = inquirer.prompt(lista_menu)
         return escolha["escolha_menu"]
-
-    def tarefa_existe(self, titulo, data_de_realizacao):
-        self.lista = self.ler_csv()
-        for tarefa in self.lista:
-            if tarefa[0] == titulo and tarefa[1] == data_de_realizacao:
-                return True
-            else:
-                return False         
+     
 
     def adicionar_tarefa(self):
         lista_tarefa = [
@@ -62,14 +63,14 @@ class ToDoList():
         tarefa['titulo'] = tarefa['titulo'].strip()
         tarefa_lista = list(tarefa.values())
 
-        if self.tarefa_existe(tarefa_lista[0],tarefa_lista[1]):
+        if self.__tarefa_existe(tarefa_lista[0],tarefa_lista[1]):
             return print('Erro: essa tarefa já existe.') 
         
         with open('tarefas.csv', 'a') as tarefas_csv:
             escritor = csv.writer(tarefas_csv, delimiter=';', lineterminator='\n')
             escritor.writerow(tarefa_lista)
 
-        self.lista = self.ler_csv()
+        self.lista = self.__ler_csv()
         print(f'Sucesso: tarefa adicionada.' )
 
     def alterar_tarefa(self):
@@ -93,7 +94,7 @@ class ToDoList():
                     self.lista[index][3] = 'Pendente'
                     print('Sucesso: ', self.lista[index])
 
-        self.salvar_csv()  
+        self.__salvar_csv()  
 
 
     def remover_tarefa(self):
@@ -111,7 +112,7 @@ class ToDoList():
         self.lista.remove(tarefa_para_excluir["tarefa"])
         print(f'Sucesso: {tarefa_para_excluir["tarefa"]} removida.' )
 
-        self.salvar_csv()
+        self.__salvar_csv()
 
     def visualizar_tarefas_por_data(self):
         datas_com_duplicatas = [linha[1] for linha in self.lista] 
