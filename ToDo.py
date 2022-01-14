@@ -25,6 +25,14 @@ class ToDoList():
             else:
                 return False
 
+    def __ordenar_lista(self):
+        self.lista = sorted(self.lista, key=lambda x: self.__converter_data(x))
+
+    def __converter_data(self, lista_tarefa):
+        data = lista_tarefa[1]
+        data_ordenada = data.split('/')[::-1]
+        return ''.join(data_ordenada)
+
     def menu(self)-> str:
 
         lista_menu = [
@@ -64,13 +72,13 @@ class ToDoList():
         tarefa_lista = list(tarefa.values())
 
         if self.__tarefa_existe(tarefa_lista[0],tarefa_lista[1]):
-            return print('Erro: essa tarefa já existe.') 
-        
-        with open('tarefas.csv', 'a') as tarefas_csv:
-            escritor = csv.writer(tarefas_csv, delimiter=';', lineterminator='\n')
-            escritor.writerow(tarefa_lista)
+            return print('Erro: essa tarefa já existe.')
 
-        self.lista = self.__ler_csv()
+        self.lista.append(tarefa_lista)
+        self.__ordenar_lista()
+
+        self.__salvar_csv()
+
         print(f'Sucesso: tarefa adicionada.' )
 
     def alterar_tarefa(self):
