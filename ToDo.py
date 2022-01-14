@@ -1,6 +1,7 @@
-import abc
 import csv
 import inquirer
+from datetime import datetime
+from datetime import timedelta
 class ToDoList():
     def __init__(self):
         self.lista = self.__ler_csv()
@@ -52,21 +53,49 @@ class ToDoList():
         escolha = inquirer.prompt(lista_menu)
         return escolha["escolha_menu"]
      
-
-    def adicionar_tarefa(self):
-        lista_tarefa = [
-            inquirer.Text("titulo", message="Titulo: "),
-            inquirer.Text("data_de_realizacao", message="Data de realização: "),
+    def __coletar_data(self) -> dict:
+        
+        data_de_realizacao = [ 
             inquirer.List(
-            "categoria",
-                message="O que você deseja fazer?",
+                "data_de_realizacao",
+                message="Data de realizacao:",
                 choices=[
-                    "Pessoal",
-                    "Profissional"
+                    "Hoje",
+                    "Amanha",
+                    "Outra data"
                     ],
             )
         ]
-        tarefa = inquirer.prompt(lista_tarefa)
+
+        data = inquirer.prompt(data_de_realizacao)
+
+        if data['data_de_realizacao'] == 'Hoje':
+            data['data_de_realizacao'] = datetime.today().strftime('%d/%m/%Y')
+
+        elif data['data_de_realizacao'] == 'Amanha':
+            tomorrow = datetime.today() + timedelta(days=1)
+            data['data_de_realizacao'] = tomorrow.strftime('%d/%m/%Y')            
+
+        else:
+            data_de_realizacao = [ inquirer.Text("data_de_realizacao", message="Data de realizacao: ") ]
+            data = inquirer.prompt(data_de_realizacao)
+
+        return data
+
+
+    def adicionar_tarefa(self):
+
+        tarefa = inquirer.prompt([inquirer.Text("titulo", message="Titulo: ")])
+        tarefa.update( self.__coletar_data() )
+        tarefa.update( inquirer.prompt([inquirer.List(
+                                                    "categoria",
+                                                        message="O que você deseja fazer?",
+                                                        choices=[
+                                                            "Pessoal",
+                                                            "Profissional"
+                                                            ]
+                                                    )]))
+
         tarefa['status'] = 'Pendente'
         tarefa['titulo'] = tarefa['titulo'].strip()
         tarefa_lista = list(tarefa.values())
