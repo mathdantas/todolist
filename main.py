@@ -7,9 +7,15 @@ to_do = ToDoList()
 while True:
     os.system('cls')
 
+    to_do.visualizar_tarefas_dia()
     opcao = to_do.menu()
 
-    if opcao == 'Adicionar tarefa':
+    if opcao == 'Mostrar todas tarefas':
+        os.system('cls')
+        print('Todas as tarefas')
+        to_do.imprimir_lista_tarefas(to_do.lista)
+        input("\n Digite ENTER para continuar")
+    elif opcao == 'Adicionar tarefa':
         to_do.adicionar_tarefa()
     elif opcao == 'Alterar status da tarefa':
         to_do.alterar_tarefa()

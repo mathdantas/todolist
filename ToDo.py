@@ -45,7 +45,7 @@ class ToDoList():
         return ''.join(data_ordenada)
 
     def __voltar_menu(self):
-        inquirer.prompt([inquirer.Text("enter", message="Pressione ENTER para voltar ao menu")])
+        input("\n Pressione ENTER para voltar ao menu")
         
 
     def menu(self)-> str:
@@ -56,6 +56,7 @@ class ToDoList():
             "escolha_menu",
                 message="O que você deseja fazer?",
                 choices=[
+                    'Mostrar todas tarefas',
                     'Adicionar tarefa',
                     'Alterar status da tarefa',
                     'Remover tarefa',
@@ -184,6 +185,13 @@ class ToDoList():
             else:
                 print(f'[green](X)[/] [bold]{tarefa[0]}[/] - {tarefa[2]} - {tarefa[1]}')
 
+    def visualizar_tarefas_dia(self):
+        print("Tarefas para hoje:")
+        for tarefa in self.lista:
+            if tarefa[1] == datetime.today().strftime('%d/%m/%Y'):
+                self.imprimir_lista_tarefas([tarefa])
+        print("\n")
+
     def visualizar_tarefas_por_data(self):
         """Apresenta ao usuario todas as datas e apresenta todas as tarefas dessa data"""
         datas_com_duplicatas = [linha[1] for linha in self.lista] 
@@ -201,7 +209,7 @@ class ToDoList():
         data_selecionada = inquirer.prompt(lista_tarefas)
         
 
-        for index, tarefa in enumerate(self.lista):
+        for tarefa in self.lista:
             if tarefa[1] == data_selecionada["data"]:
                 self.imprimir_lista_tarefas([tarefa])
 
