@@ -21,4 +21,4 @@ while True:
         print('Encerrando o programa!')
         break
     
-    sleep(4)
+    sleep(1)
