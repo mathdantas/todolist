@@ -2,6 +2,8 @@ import csv
 import inquirer
 from datetime import datetime
 from datetime import timedelta
+import os
+from rich import print
 class ToDoList():
     def __init__(self):
         #self.lista e igual ao csv durante todo o programa
@@ -44,6 +46,7 @@ class ToDoList():
 
     def __voltar_menu(self):
         inquirer.prompt([inquirer.Text("enter", message="Pressione ENTER para voltar ao menu")])
+        
 
     def menu(self)-> str:
         """Apresenta o menu de opcoes ao usuario e retorna a opcao escolhida"""
@@ -121,7 +124,9 @@ class ToDoList():
 
         self.__salvar_csv()
 
-        print(f'Sucesso: tarefa adicionada.' )
+        os.system('cls')
+        print(f'Sucesso: tarefa adicionada.\n' )
+        self.imprimir_lista_tarefas([tarefa_lista])
         self.__voltar_menu()
 
     def alterar_tarefa(self):
@@ -141,10 +146,12 @@ class ToDoList():
             if tarefa == alterar_tarefa["tarefa"]:
                 if tarefa[3] == 'Pendente':
                     self.lista[index][3] = 'Concluida'
-                    print('Sucesso: ', self.lista[index])
                 else:
                     self.lista[index][3] = 'Pendente'
-                    print('Sucesso: ', self.lista[index])
+                
+                os.system('cls')
+                print('Sucesso: tarefa alterada.\n')
+                self.imprimir_lista_tarefas( [self.lista[index]] )
 
         self.__salvar_csv()
         self.__voltar_menu()
@@ -163,10 +170,19 @@ class ToDoList():
         tarefa_para_excluir = inquirer.prompt(lista_tarefas)
         
         self.lista.remove(tarefa_para_excluir["tarefa"])
-        print(f'Sucesso: {tarefa_para_excluir["tarefa"]} removida.' )
+
+        os.system('cls')
+        print('Sucesso: tarefa "' + tarefa_para_excluir["tarefa"][0] + '" removida.' )
 
         self.__salvar_csv()
         self.__voltar_menu()
+
+    def imprimir_lista_tarefas(self, tarefas):
+        for tarefa in tarefas:
+            if tarefa[3] == 'Pendente':
+                print(f'[red]( )[/] [bold]{tarefa[0]}[/] - {tarefa[2]} - {tarefa[1]}')
+            else:
+                print(f'[green](X)[/] [bold]{tarefa[0]}[/] - {tarefa[2]} - {tarefa[1]}')
 
     def visualizar_tarefas_por_data(self):
         """Apresenta ao usuario todas as datas e apresenta todas as tarefas dessa data"""
@@ -187,6 +203,6 @@ class ToDoList():
 
         for index, tarefa in enumerate(self.lista):
             if tarefa[1] == data_selecionada["data"]:
-                print(tarefa)
+                self.imprimir_lista_tarefas([tarefa])
 
         self.__voltar_menu()
